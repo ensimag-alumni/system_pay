@@ -150,10 +150,11 @@ module SystemPay
     # Public: Verify that the returned signature is valid.
     # Return boolean
     def self.valid_signature?(params)
-      vads_params = params.sort.select{|value| value[0].to_s.match(/^vads_/)}.map{|value| value[1]}
-      sign(vads_params) == params['signature']
+      raw_params = params.respond_to?(:to_unsafe_h) ? params.to_unsafe_h : params.to_h
+      vads_params = raw_params.sort.select{|value| value[0].to_s.match(/^vads_/)}.map{|value| value[1]}
+      sign(vads_params) == raw_params['signature']
     end
-
+    
     # Public: Diagnose result from returned params
     #
     # params - The hash of params returned by the bank.
